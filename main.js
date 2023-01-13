@@ -1,98 +1,98 @@
 //references
-
 const notesContainer = document.querySelector("#app");
 const addNoteButton = document.querySelector(".addnote");
 
 // declaring all functions
+// local storage functions
+// 1.save a note 
+// 2. get an existing note 
 
-/* function getNotes will retrieve 
-all the existing notes from our local storage in the clients browser*/
-
-const getNotes = () => {
-  return JSON.parse(localStorage.getItem("stickynotes-notes") || "[]");
+//save note 
+//JSON.stringify converts the objects into a string 
+const saveNotes=(notes)=>{
+localStorage.setItem("sticky-note", JSON.stringify(notes));
 };
 
-/* this function will take in an array of notes and save them 
-in the local storage in the clients browser*/
-
-const saveNotes = (notes) => {
-  localStorage.setItem("stickynotes-notes", JSON.stringify(notes));
+//get note 
+//JSON.parse converts the string into an object 
+const getNotes=()=>{
+return JSON.parse(localStorage.getItem("sticky-note") || "[]");
 };
 
-/*this function will allow us to build and add 
-a new element to represent a note*/
-
-const createNoteElement = (id, content) => {
-  const element = document.createElement("textarea");
-
+// a function to create the the textarea element and add styling 
+const createNoteElement=(id, content)=>{
+  const element= document.createElement("textarea");
+  // class
   element.classList.add("note");
-  element.value = content;
-  element.placeholder = "Empty Sticky Note";
+  element.value= content || "";
+  element.placeholder="Enter New Note";
+  element.id=id
+  notesContainer.appendChild(element);
 
-  element.addEventListener("change", () => {
-    updateNote(id, content);
-  });
 
-  element.addEventListener("dblclick", () => {
-    const doDelete = confirm("Are you sure you want to delete this note?");
-    if (doDelete) {
-      deleteNote(id, element);
+  updateNote(id,element.value);
+
+
+  element.addEventListener("dblclick", ()=>{
+    const doDelete = confirm("Are you sure you want to delete your note");
+  
+    if (doDelete){
+      deleteNote(id, element)
     }
   });
+  element.addEventListener("change", () =>{
+      updateNote(element.id, element.value) 
+  });
+
 
   return element;
+  // 
 };
+// a function to add the element to the DOM once the button is clicked 
+addNoteButton.addEventListener("click", ()=> addNote())
 
-/* this function will add a new note not only 
-to the HTML but also it will save it to the local
-storage*/
-
-const addNote = () => {
-  /*first step is to get a reference to all 
-    the existing notes within local storage*/
-
-  const notes = getNotes();
+// a function that references all existing notes 
+const addNote = ()=>{
+  const notes= getNotes();
   const noteObject = {
-    id: Math.floor(Math.random() * 100000),
-    content: "",
-  };
-  const noteElement = createNoteElement(noteObject.id, noteObject.content);
-  notesContainer.insertBefore(noteElement, addNoteButton);
-
+    id:Math.floor(Math.random()*100000),
+    content:""
+  }
   notes.push(noteObject);
   saveNotes(notes);
-};
+  const noteElement = createNoteElement(noteObject.id, noteObject.content)
+}
 
-/* a function to update the notes */
-
-const updateNote = (id, element) => {
+const updateNote = (id,newText)=>{
   const notes = getNotes();
-  const targetNote = notes.filter((note) => note.id == id)[0];
-
-  targetNote.content = element.value;
+  
+  const targetNote = notes.filter(note => note.id==id)[0];
+  targetNote.content=newText;
   saveNotes(notes);
-};
+}
 
-/* a function to delete notes*/
 
 const deleteNote = (id, element) => {
-  const notes = getNotes().filter((note) => note.id != id);
+  const notes = getNotes().filter((note)=> note.id!==id );
+
   saveNotes(notes);
   notesContainer.removeChild(element);
-};
+}
 
-// This displays the notes when they page is loaded
-getNotes().forEach((note) => {
-  const noteElement = createNoteElement(note.id, note.content);
-  notesContainer.insertBefore(noteElement, addNoteButton);
-});
+//const notes = getNotes();
+//notes.forEach(note => createNoteElement(note.id, note.content));
 
-//add a tect content when the add note button is clicked
 
-getNotes().forEach((note) => {
-  const notElement = createNoteElement(note.id, note.content);
-});
 
-addNoteButton.addEventListener("click", () => {
-  addNote();
-});
+const notes = getNotes();
+notes.forEach(note => createNoteElement(note.id, note.content));
+
+
+
+
+
+
+
+
+
+

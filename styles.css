@@ -5,7 +5,7 @@
 }
 
 body{
-    background-color: paleturquoise;
+    background-color: rgb(147, 185, 185);
 }
 
 #app{
@@ -27,7 +27,7 @@ body{
     font-family: sans-serif;
     
 }
-
+/*add note button*/
 .addnote{
     height:200px;
     border: none;
